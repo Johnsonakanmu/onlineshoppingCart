@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Johnson shop Rite | Cart</title>
+</head>
+<body>
+
+<section>
+    <div class="container-fluid mt-5 p-5">
+
+        <div class="card card-sh">
+            <div class="card-header text-center">
+                <p class="fs-4">Cart Page</p>
+
+                <div th:if="${successMsg}">
+                    <p class="text-success fw-bold" th:text="${successMsg}"></p>
+                </div>
+
+                <div th:if="${errorMsg}">
+                    <p class="text-danger fw-bold" th:text="${errorMsg}"></p>
+                </div>
+
+                <div th:if="${infoMsg}">
+                    <p class="fw-bold" th:text="${infoMsg}"></p>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">S/N</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col" class="text-center">Quantity</th>
+                        <th scope="col">Total Price</th>
+                        <th scope="col">Date</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="cart,c:${carts}">
+                        <th scope="row">[[${c.count}]]</th>
+                        <td><img th:src="@{'/img/product_img/' + ${cart.product.image}}" height="50px" width="50px"></td>
+                        <td>[[${cart.product.title}]]</td>
+                        <td>[[${cart.product.discountPrice}]]</td>
+                        <td class="text-center"> <a th:href="@{'/user/cartQuantityUpdate?sy=de&cid=' + ${cart.id}}"><i class="fa fa-minus" aria-hidden="true"></i></a>
+                            [[${' [' + ' ' + cart.quantity + ' '  +']' }]]
+                            <a th:href="@{'/user/cartQuantityUpdate?sy=in&cid=' + ${cart.id}}"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                        </td>
+                        <td>[[${cart.totalPrice}]]</td>
+                        <td>
+                            [[${#temporals.format(cart.dateCreated, 'dd MMM yyyy HH:mm')}]]
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"></td>
+                        <td class="fw-bold">Total Price</td>
+                        <td class="fw-bold">&#8358; [[${totalOrderPrice}]]</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+                <div class="text-center">
+                    <a href="/user/orders" class="btn btn-warning"> Proceed Payment</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+</body>
+</html>

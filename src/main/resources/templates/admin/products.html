@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<section>
+    <div class="container-fluid mt-5 p-5">
+        <div class="card card-sh">
+            <div class="card-header text-center">
+                <p class="fs-4 ">View Product</p>
+
+                <div th:if="${successMsg}" class="alert alert-success fw-bold alert-box" role="alert">
+                    <span th:text="${successMsg}"></span>
+                </div>
+
+                <div th:if="${errorMsg}" class="alert alert-danger fw-bold alert-box" role="alert">
+                    <span th:text="${errorMsg}"></span>
+                </div>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">S/N</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">category</th>
+                        <th scope="col">Stock</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Discount</th>
+                        <th scope="col">Discount Price</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="p, c: ${products}">
+                        <th scope="row">[[${c.count}]]</th>
+                        <td><img th:src="@{'/img/product_img/' + ${p.image}}" height="50px" width="50px"></td>
+                        <td>[[${p.title}]]</td>
+                        <td>[[${p.category}]]</td>
+                        <td>[[${p.stock}]]</td>
+                        <td>[[${p.price}]]</td>
+                        <td>[[${p.discount}]]</td>
+                        <td>[[${p.discountPrice}]]</td>
+                        <td>[[${p.isActive}]]</td>
+
+                        <td>
+                            <a th:href="@{'/admin/editProduct/' + ${ p.id}}" class="btn btn-primary btn-sm"><i class="fa fa-solid fa-pen-to-square" aria-hidden="true"></i> Edit</a>
+                            <a th:href="@{'/admin/deleteProduct/' + ${p.id}}" class="btn btn-danger btn-sm"><i class="fa fa-trash" aria-hidden="true"></i> Delete</a>
+
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+
+            <!-- Show message only when products list is empty -->
+            <div th:if="${#lists.isEmpty(products)}" class="text-center fw-bold text-danger" style="font-size:18px;">
+                🚫 No products available.
+            </div>
+        </div>
+
+    </div>
+</section>
+
+</body>
+</html>

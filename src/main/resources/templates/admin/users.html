@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<section>
+    <div class="container-fluid mt-5 p-5">
+        <div class="card card-sh">
+            <div class="card-header text-center">
+                <p class="fs-4" style="font-weight:800; font-size:1.5rem; text-transform: uppercase">User</p>
+
+                <div th:if="${successMsg}" class="alert alert-success fw-bold alert-box" role="alert">
+                    <span th:text="${successMsg}"></span>
+                </div>
+
+                <div th:if="${errorMsg}" class="alert alert-danger fw-bold alert-box" role="alert">
+                    <span th:text="${errorMsg}"></span>
+                </div>
+            </div>
+
+            <!-- ✅ Only show the table when there are users -->
+            <div class="card-body" th:if="${!#lists.isEmpty(users)}">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">S/N</th>
+                        <th scope="col">Profile</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Mobile No</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="u, c : ${users}">
+                        <th scope="row" th:text="${c.count}"></th>
+                        <td>
+                            <img th:src="@{'/img/profile_img/' + ${u.profileImage}}" height="50" width="50" class="rounded-circle border">
+                        </td>
+                        <td th:text="${u.name}"></td>
+                        <td th:text="${u.email}"></td>
+                        <td th:text="${u.mobileNumber}"></td>
+                        <td th:text="${u.city + ', ' + u.state}"></td>
+                        <td>
+                                <span th:text="${u.isEnable ? 'Active' : 'Inactive'}"
+                                      th:classappend="${u.isEnable ? 'text-success fw-bold' : 'text-danger fw-bold'}"></span>
+                        </td>
+                        <td>
+                            <a th:href="@{'/admin/updateStatus?status=true&id=' + ${u.id}}" class="btn btn-primary btn-sm">Activate</a>
+                            <a th:href="@{'/admin/updateStatus?status=false&id=' + ${u.id}}" class="btn btn-danger btn-sm">Deactivate</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ✅ Message shown only when no users exist -->
+            <div th:if="${#lists.isEmpty(users)}" class="text-center fw-bold text-danger py-4" style="font-size:18px;">
+                🚫 No users available.
+            </div>
+        </div>
+    </div>
+</section>
+
+
+</body>
+</html>
