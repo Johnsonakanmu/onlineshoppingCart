@@ -5,10 +5,12 @@ import com.johnsonlovecode.OnLineShoppinCart.service.CartService;
 import com.johnsonlovecode.OnLineShoppinCart.service.CategoryService;
 import com.johnsonlovecode.OnLineShoppinCart.service.OrderService;
 import com.johnsonlovecode.OnLineShoppinCart.service.UserDtlsService;
+import com.johnsonlovecode.OnLineShoppinCart.util.OrderStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.security.Principal;
@@ -98,7 +100,7 @@ public class UserController {
         UserDtls user = getLonggedUserDetails(p);
         orderService.saveOrder(user.getId(), request);
 
-        return "redirect:/user/success";
+        return "/user/success";
     }
 
 
@@ -108,12 +110,35 @@ public class UserController {
     }
 
 
-    @GetMapping("/user-order")
+    @GetMapping("/user-orders")
     public String myOrder(Model m, Principal p){
         UserDtls loginUser = getLonggedUserDetails(p);
         List<ProductOrder> orders = orderService.getOrdersByUser(loginUser.getId());
         m.addAttribute("orders", orders);
         return "/user/my_orders";
+    }
+
+
+    @GetMapping("/update-status")
+    public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, RedirectAttributes attributes){
+
+        OrderStatus[] values = OrderStatus.values();
+        String status =null;
+
+        for (OrderStatus orderSt : values){
+            if(orderSt.getId() == st){
+                status = orderSt.getName();
+            }
+        }
+        Boolean updateOrder = orderService.updateOrderStatus(id, status);
+
+        if (updateOrder){
+             attributes.addFlashAttribute("successMsg", "Status Updated Successfully");
+        }else {
+            attributes.addFlashAttribute("errorMsg", "Status not updated");
+        }
+
+        return "redirect:/user/user-orders";
     }
 
 

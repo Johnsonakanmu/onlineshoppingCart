@@ -2,11 +2,10 @@ package com.johnsonlovecode.OnLineShoppinCart.controller;
 
 import com.johnsonlovecode.OnLineShoppinCart.model.Category;
 import com.johnsonlovecode.OnLineShoppinCart.model.Product;
+import com.johnsonlovecode.OnLineShoppinCart.model.ProductOrder;
 import com.johnsonlovecode.OnLineShoppinCart.model.UserDtls;
-import com.johnsonlovecode.OnLineShoppinCart.service.CartService;
-import com.johnsonlovecode.OnLineShoppinCart.service.CategoryService;
-import com.johnsonlovecode.OnLineShoppinCart.service.ProductService;
-import com.johnsonlovecode.OnLineShoppinCart.service.UserDtlsService;
+import com.johnsonlovecode.OnLineShoppinCart.service.*;
+import com.johnsonlovecode.OnLineShoppinCart.util.OrderStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
@@ -34,6 +33,7 @@ public class AdminController {
     private ProductService productService;
     private UserDtlsService userDtlsService;
     private CartService cartService;
+    private OrderService orderService;
 
     @GetMapping("/")
     public String index(){
@@ -265,6 +265,41 @@ public class AdminController {
 
         return "redirect:/admin/users";
     }
+
+    //Get all User Endpoint
+    @GetMapping("/orders")
+    public String getAllOrders(Model m){
+
+       List<ProductOrder> allOrders = orderService.getAllOrders();
+
+       m.addAttribute("orders", allOrders);
+
+        return "/admin/orders";
+    }
+
+
+    @PostMapping("/update-order-status")
+    public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, RedirectAttributes attributes){
+
+        OrderStatus[] values = OrderStatus.values();
+        String status =null;
+
+        for (OrderStatus orderSt : values){
+            if(orderSt.getId() == st){
+                status = orderSt.getName();
+            }
+        }
+        Boolean updateOrder = orderService.updateOrderStatus(id, status);
+
+        if (updateOrder){
+            attributes.addFlashAttribute("successMsg", "Status Updated Successfully");
+        }else {
+            attributes.addFlashAttribute("errorMsg", "Status not updated");
+        }
+
+        return "redirect:/admin/orders";
+    }
+
 
 
 

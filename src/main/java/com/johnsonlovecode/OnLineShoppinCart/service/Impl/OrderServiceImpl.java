@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -35,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
             order.setOrderDate(new Date());
 
             order.setProduct(cart.getProduct());
-            order.setPrice(cart.getProduct().getDiscountPrice());
+            order.setPrice(cart.getProduct ().getDiscountPrice());
 
             order.setQuantity(cart.getQuantity());
             order.setUser(cart.getUser());
@@ -65,5 +66,25 @@ public class OrderServiceImpl implements OrderService {
     public List<ProductOrder> getOrdersByUser(Integer userId) {
        List<ProductOrder> orders = orderRepository.findByUserId(userId);
         return orders;
+    }
+
+    @Override
+    public Boolean updateOrderStatus(Integer id, String status) {
+
+        Optional<ProductOrder> findById = orderRepository.findById(id);
+
+        if (findById.isPresent()){
+            ProductOrder productOrders = findById.get();
+            productOrders.setStatus(status);
+            orderRepository.save(productOrders);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public List<ProductOrder> getAllOrders() {
+        return orderRepository.findAll();
     }
 }
